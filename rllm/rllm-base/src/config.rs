@@ -115,6 +115,10 @@ pub struct SamplingParams {
 
     /// Number of log probabilities to return per output token.
     pub logprobs: Option<i32>,
+
+    /// Random seed for sampling. If None, uses a fixed seed (42) for deterministic sampling.
+    /// Setting this to Some(seed) allows reproducible generation across runs.
+    pub seed: Option<u64>,
 }
 
 impl SamplingParams {
@@ -137,6 +141,7 @@ impl SamplingParams {
             ignore_eos: false,
             max_tokens: 16,
             logprobs: None,
+            seed: None,
         };
         r.verify_args().unwrap();
         r

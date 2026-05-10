@@ -17,9 +17,12 @@ impl LogitsProcessor {
             Some(sampling_params.temperature)
         };
 
+        // Use deterministic seed for reproducible generation.
+        // Default to 42 if no seed is specified.
+        let seed = sampling_params.seed.unwrap_or(42);
+
         Self {
-            rng: rand::rngs::StdRng::from_entropy(),
-            // seed_from_u64(42),
+            rng: rand::rngs::StdRng::seed_from_u64(seed),
             temperature,
             top_p: sampling_params.top_p,
         }
