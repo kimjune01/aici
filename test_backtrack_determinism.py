@@ -1,8 +1,8 @@
 """
-Test to reproduce issue #93: pytctrl backtracking is non-idempotent
+Test for issue #93: pytctrl backtracking should be idempotent
 
-This test demonstrates that backtracking from the same label produces
-different outputs due to non-deterministic RNG state.
+This test verifies that backtracking from the same label with the same
+message produces identical outputs.
 """
 import pyaici.server as aici
 
@@ -33,11 +33,23 @@ async def main():
     aici.set_var(f'prompt', prompt_pfx)
 
     # generate a response for the same message N times from the same label
+    outputs = []
     for msgidx, message in enumerate(messages):
         aici.set_var(f'message_{msgidx}', message)
         await aici.FixedTokens(f'message: {message}', following=plabel)
-        await aici.gen_text(
+        res = await aici.gen_text(
             stop_at='Message End', store_var=f'res_{msgidx}')
+        outputs.append(res)
+        
+    # Verify all outputs are identical
+    assert outputs[0] == outputs[1] == outputs[2], (
+        f"Backtracking outputs should be deterministic.\n"
+        f"Got {len(set(outputs))} distinct outputs:\n"
+        f"  output[0]: {repr(outputs[0][:100])}\n"
+        f"  output[1]: {repr(outputs[1][:100])}\n"
+        f"  output[2]: {repr(outputs[2][:100])}"
+    )
+    print(f"✓ All {len(messages)} backtrack iterations produced identical output")
 
 
 result = aici.start(main())

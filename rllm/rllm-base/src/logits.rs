@@ -17,8 +17,8 @@ impl LogitsProcessor {
             Some(sampling_params.temperature)
         };
 
-        // Use deterministic seed for reproducible generation.
-        // Default to 42 if no seed is specified.
+        // Use fixed seed for deterministic sampling by default.
+        // This ensures backtracking produces identical outputs.
         let seed = sampling_params.seed.unwrap_or(42);
 
         Self {
