@@ -379,7 +379,7 @@ when executing 10 sequences in parallel (this is irrespective of the constraint 
 The overhead goes up to around 0.7ms for 40 sequences (though it has not been fully optimized yet).
 
 WebAssembly is designed to have minimal overhead, compared to native code.
-In our experience, [highly optimized](controllers/aici_abi/implementation.md#token-trie)
+In our experience, [highly optimized](controllers/aici_abi/implementation.md)
 Rust code is less than 2x slower when run in
 [Wasmtime](https://wasmtime.dev/) than native.
 This is 10-100x better than JavaScript or Python.
